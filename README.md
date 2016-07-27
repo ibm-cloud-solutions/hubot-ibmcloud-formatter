@@ -1,3 +1,9 @@
+[![Build Status](https://travis-ci.org/ibm-cloud-solutions/hubot-ibmcloud-formatter.svg?branch=master)](https://travis-ci.org/ibm-cloud-solutions/hubot-ibmcloud-formatter)
+
+[![Dependency Status](https://dependencyci.com/github/ibm-cloud-solutions/hubot-ibmcloud-formatter/badge)](https://dependencyci.com/github/ibm-cloud-solutions/hubot-ibmcloud-formatter)
+
+[![Coverage Status](https://coveralls.io/repos/github/ibm-cloud-solutions/hubot-ibmcloud-formatter/badge.svg?branch=master)](https://coveralls.io/github/ibm-cloud-solutions/hubot-ibmcloud-formatter?branch=master)
+
 # hubot-ibmcloud-formatter
 
 Listens for messages sent via `robot.emit` directed at `ibmcloud.formatter` and formats them appropriately for the given hubot adapter.
