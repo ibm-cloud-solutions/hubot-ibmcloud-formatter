@@ -80,6 +80,38 @@ describe('Interacting with the Slack Transformer', function() {
 		});
 	});
 
+	it('> 50 attachments should emit a multiple slack.attachment events', function() {
+		robot.emit = sinon.spy();
+		let longAttachments = [];
+		let firstAttachments = [];
+		let secondAttachments = [];
+		for (var i = 0; i < 51; i++) {
+			longAttachments.push(i);
+			if (i < 50) {
+				firstAttachments.push(i);
+			}
+			else {
+				secondAttachments.push(i);
+			}
+		}
+		const payload = {
+			response: {
+				message: 'Hello'
+			},
+			attachments: longAttachments
+		};
+
+		slack(robot, payload);
+		expect(robot.emit).to.have.been.calledWith('slack.attachment', {
+			message: payload.response.message,
+			attachments: firstAttachments
+		});
+		expect(robot.emit).to.have.been.calledWith('slack.attachment', {
+			message: payload.response.message,
+			attachments: secondAttachments
+		});
+	});
+
 	it('should reply with a properly formatted response', function() {
 		let actualOutput = '';
 		let testInput = '<a href="http://github.com/project">link_text</a>, **strong**, *highlight*, \n>blockquote';
