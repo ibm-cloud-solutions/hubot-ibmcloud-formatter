@@ -91,11 +91,44 @@ module.exports = (robot, attachment) => {
 	}
 	else if (attachment && attachment.response && attachment.response.message && attachment.attachments) {
 		robot.logger.debug(`${TAG}: Sending attachment - ${attachment.attachments}`);
-		// This is a slack attachment type object.  Pass along as is.
-		robot.emit('slack.attachment', {
-			message: attachment.response.message,
-			attachments: attachment.attachments
-		});
+
+		// If no attachments length, send now.
+		if (attachment.attachments.length === 0) {
+			robot.emit('slack.attachment', {
+				message: attachment.response.message,
+				attachments: attachment.attachments
+			});
+			return;
+		}
+
+		// Extra logic is needed here to ensure we don't send more than slack allows.
+		// Break up the list of attachments into smaller chunks.  Note, however, that
+		// there is no promise that the ordering between chunks is correct.
+		let maxAttachments = 50;
+		let remainingAttachments = attachment.attachments.length;
+		let currentIndex = 0;
+		while (remainingAttachments > 0) {
+			// Grab the next 50 attachments to send, or if < 50, whatever remains.
+			let numAttachmentsToSend = maxAttachments;
+			if (remainingAttachments < 50) {
+				numAttachmentsToSend = remainingAttachments;
+			}
+
+			// Copy the number of attachments to send into a new array.
+			let smallAttachments = [];
+			for (var i = 0; i < numAttachmentsToSend; i++) {
+				smallAttachments.push(attachment.attachments[currentIndex++]);
+			}
+
+			// Send the attachments.
+			robot.emit('slack.attachment', {
+				message: attachment.response.message,
+				attachments: smallAttachments
+			});
+
+			// Adjust how many remain based on how many were just sent.
+			remainingAttachments -= numAttachmentsToSend;
+		}
 	}
 	else {
 		robot.logger.warning(
