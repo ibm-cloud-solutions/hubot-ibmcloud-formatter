@@ -96,9 +96,10 @@ module.exports = (robot, attachment) => {
 		});
 	}
 	else if (attachment && attachment.filePath && attachment.fileName) {
-		fs.unlinkSync(attachment.filePath);
-		robot.logger.debug(`${TAG}: Uploading file is not supported`);
-		responseMessage = `Uploading file is not supported for ${robot.adapterName} adapter.`;
+		let pathToFile = fs.realpathSync(attachment.filePath);
+
+		robot.logger.debug(`${TAG}: File downloaded and available ${pathToFile}`);
+		responseMessage = `File downloaded and available ${pathToFile}`;
 	}
 	else if (attachment && attachment.attachments) {
 		// Handle attachments, formatting into an ascii table.
