@@ -58,10 +58,11 @@ describe('Interacting with the Plain Text Transformer', function() {
 			}
 		};
 
+		let pathToFile = fs.realpathSync(fileName);
 		payload.response.send = sinon.spy();
 
 		formatter(robot, payload);
-		expect(payload.response.send).to.have.been.calledWith('Uploading file is not supported for shell adapter.');
+		expect(payload.response.send).to.have.been.calledWith(`File downloaded and available ${pathToFile}`);
 		if (fs.exists(fileName))
 			fs.unlinkSync(fileName);
 	});

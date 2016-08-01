@@ -13,6 +13,18 @@ const fs = require('fs');
 const _ = require('lodash');
 const marked = require('marked');
 
+const i18n = new (require('i18n-2'))({
+	locales: ['en'],
+	extension: '.json',
+	// Add more languages to the list of locales when the files are created.
+	directory: __dirname + '/../messages',
+	defaultLocale: 'en',
+	// Prevent messages file from being overwritten in error conditions (like poor JSON).
+	updateFiles: false
+});
+// At some point we need to toggle this setting based on some user input.
+i18n.setLocale('en');
+
 // -------------------------------------------------------
 // Custom renderer to strip out all markdown formatting
 // included in messages.
@@ -96,9 +108,10 @@ module.exports = (robot, attachment) => {
 		});
 	}
 	else if (attachment && attachment.filePath && attachment.fileName) {
-		fs.unlinkSync(attachment.filePath);
-		robot.logger.debug(`${TAG}: Uploading file is not supported`);
-		responseMessage = `Uploading file is not supported for ${robot.adapterName} adapter.`;
+		let pathToFile = fs.realpathSync(attachment.filePath);
+
+		robot.logger.debug(`${TAG}: File downloaded and available ${pathToFile}`);
+		responseMessage = i18n.__('formatter.file.downloaded', pathToFile);
 	}
 	else if (attachment && attachment.attachments) {
 		// Handle attachments, formatting into an ascii table.
@@ -125,7 +138,7 @@ module.exports = (robot, attachment) => {
 		responseMessage = asciiToTable(responseMessage);
 	}
 	else {
-		responseMessage = 'No results found';
+		responseMessage = i18n.__('formatter.no.results.found');
 	}
 
 	robot.logger.debug(`${TAG}: Sending response - ${responseMessage}`);
