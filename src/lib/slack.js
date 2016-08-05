@@ -59,7 +59,7 @@ module.exports = (robot, attachment) => {
 	}
 	else if (attachment && attachment.filePath && attachment.fileName) {
 		let slackToken = robot.adapter.options.token;
-		let slackChannel = attachment.response.message.rawMessage.channel;
+		let slackChannel = attachment.response.message.room;
 
 		robot.logger.debug(`${TAG}: Uploading file to slack - ${attachment.fileName}`);
 		let file = fs.createReadStream(attachment.filePath);
@@ -91,12 +91,11 @@ module.exports = (robot, attachment) => {
 	}
 	else if (attachment && attachment.response && attachment.response.message && attachment.attachments) {
 		robot.logger.debug(`${TAG}: Sending attachment - ${attachment.attachments}`);
-
 		// If no attachments length, send now.
 		if (attachment.attachments.length === 0) {
-			robot.emit('slack.attachment', {
-				message: attachment.response.message,
-				attachments: attachment.attachments
+			attachment.response.send({
+				attachments: attachment.attachments,
+				as_user: true
 			});
 			return;
 		}
@@ -119,13 +118,10 @@ module.exports = (robot, attachment) => {
 			for (var i = 0; i < numAttachmentsToSend; i++) {
 				smallAttachments.push(attachment.attachments[currentIndex++]);
 			}
-
-			// Send the attachments.
-			robot.emit('slack.attachment', {
-				message: attachment.response.message,
-				attachments: smallAttachments
+			attachment.response.send({
+				attachments: smallAttachments,
+				as_user: true
 			});
-
 			// Adjust how many remain based on how many were just sent.
 			remainingAttachments -= numAttachmentsToSend;
 		}
