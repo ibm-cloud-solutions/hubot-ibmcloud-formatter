@@ -57,10 +57,13 @@ describe('Interacting with the IBM Cloud Formatter', function() {
 				},
 				attachments: []
 			};
+
 			listener(robot);
 			expect(eventCb).to.be.defined;
+			data.response.send = sinon.spy();
 			eventCb(data);
-			expect(robot.emit).to.have.been.calledWith('slack.attachment');
+			expect(data.response.send).to.have.been.calledWith({ as_user: true, attachments: data.attachments });
+
 		});
 
 		it('should use the text formatter when an unkown adapter type is used', function() {
