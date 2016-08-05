@@ -49,9 +49,7 @@ describe('Interacting with the Slack Transformer', function() {
 			filePath: fileName,
 			response: {
 				message: {
-					rawMessage: {
-						channel: '12345Channel'
-					}
+					room: '12345Channel'
 				}
 			}
 		};
@@ -64,24 +62,20 @@ describe('Interacting with the Slack Transformer', function() {
 			fs.unlinkSync(fileName);
 	});
 
-	it('should emit a slack.attachment event', function() {
-		robot.emit = sinon.spy();
+	it('should send a slack attachment', function() {
 		const payload = {
 			response: {
 				message: 'Hello'
 			},
 			attachments: [1, 2, 3]
 		};
+		payload.response.send = sinon.spy();
 
 		slack(robot, payload);
-		expect(robot.emit).to.have.been.calledWith('slack.attachment', {
-			message: payload.response.message,
-			attachments: payload.attachments
-		});
+		expect(payload.response.send).to.have.been.calledWith({ as_user: true, attachments: payload.attachments });
 	});
 
-	it('> 50 attachments should emit a multiple slack.attachment events', function() {
-		robot.emit = sinon.spy();
+	it('> 50 attachments should send multiple slack attachment messages', function() {
 		let longAttachments = [];
 		let firstAttachments = [];
 		let secondAttachments = [];
@@ -100,16 +94,10 @@ describe('Interacting with the Slack Transformer', function() {
 			},
 			attachments: longAttachments
 		};
-
+		payload.response.send = sinon.spy();
 		slack(robot, payload);
-		expect(robot.emit).to.have.been.calledWith('slack.attachment', {
-			message: payload.response.message,
-			attachments: firstAttachments
-		});
-		expect(robot.emit).to.have.been.calledWith('slack.attachment', {
-			message: payload.response.message,
-			attachments: secondAttachments
-		});
+		expect(payload.response.send).to.have.been.calledWith({ as_user: true, attachments: firstAttachments });
+		expect(payload.response.send).to.have.been.calledWith({ as_user: true, attachments: secondAttachments });
 	});
 
 	it('should reply with a properly formatted response', function() {
