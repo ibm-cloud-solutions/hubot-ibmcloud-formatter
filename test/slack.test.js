@@ -118,7 +118,7 @@ describe('Interacting with the Slack Transformer', function() {
 		expect(actualOutput).to.eql(expectedOutput);
 	});
 
-	it('should repalce escapable characters with unicode equivalents', function() {
+	it('should replace escapable characters with unicode equivalents', function() {
 		let actualOutput = '';
 		let testInput = '"It\'s about time."';
 		let expectedOutput = '\u201cIt\u2019s about time.\u201d';
@@ -135,4 +135,41 @@ describe('Interacting with the Slack Transformer', function() {
 		slack(robot, payload);
 		expect(actualOutput).to.eql(expectedOutput);
 	});
+
+	it('should not turn numbered lists into html tags', function() {
+		let actualOutput = '';
+		let testInput = 'Here is my list\n1. One\n2. Two';
+		let expectedOutput = testInput;
+		let replyFunc = function(arg) {
+			actualOutput = arg;
+		};
+		const payload = {
+			message: testInput,
+			response: {
+				reply: replyFunc
+			}
+		};
+
+		slack(robot, payload);
+		expect(actualOutput).to.eql(expectedOutput);
+	});
+
+	it('should not turn unordered lists into html tags', function() {
+		let actualOutput = '';
+		let testInput = 'Here is my list\n- One\n- Two';
+		let expectedOutput = testInput;
+		let replyFunc = function(arg) {
+			actualOutput = arg;
+		};
+		const payload = {
+			message: testInput,
+			response: {
+				reply: replyFunc
+			}
+		};
+
+		slack(robot, payload);
+		expect(actualOutput).to.eql(expectedOutput);
+	});
+
 });

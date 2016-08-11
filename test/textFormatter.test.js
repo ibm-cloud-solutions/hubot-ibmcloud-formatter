@@ -160,4 +160,45 @@ describe('Interacting with the Plain Text Transformer', function() {
 		formatter(robot, payload);
 		expect(actualOutput).to.eql(expectedOutput);
 	});
+
+
+	it('should not turn numbered lists into html tags', function() {
+		const robot = {};
+		robot.logger = logger;
+		let actualOutput = '';
+		let testInput = 'Here is my list\n1. One\n2. Two';
+		let expectedOutput = testInput;
+		let sendFunc = function(arg) {
+			actualOutput = arg;
+		};
+		const payload = {
+			message: testInput,
+			response: {
+				send: sendFunc
+			}
+		};
+
+		formatter(robot, payload);
+		expect(actualOutput).to.eql(expectedOutput);
+	});
+
+	it('should not turn unordered lists into html tags', function() {
+		const robot = {};
+		robot.logger = logger;
+		let actualOutput = '';
+		let testInput = 'Here is my list\n- One\n- Two';
+		let expectedOutput = testInput;
+		let sendFunc = function(arg) {
+			actualOutput = arg;
+		};
+		const payload = {
+			message: testInput,
+			response: {
+				send: sendFunc
+			}
+		};
+
+		formatter(robot, payload);
+		expect(actualOutput).to.eql(expectedOutput);
+	});
 });

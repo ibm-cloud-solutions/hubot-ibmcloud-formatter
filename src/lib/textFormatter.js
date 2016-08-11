@@ -46,6 +46,32 @@ renderer.em = function(text) {
 renderer.blockquote = function(text) {
 	return '\n' + text;
 };
+// If a list is passed into the formatter, each list item will be sent here.
+// By default, html tags will be put on them, <li> and </li>.  By overriding
+// it here, we can have it just return the text.
+renderer.listitem = function(text) {
+	return '\n' + text;
+};
+// Handle a list.  The listitem function above handles the item tags, but this
+// will handle preventing the <ol></ol> or <ul></ul> tags from being added.
+// The list must be parsed and put in a generic format to work.
+renderer.list = function(body, ordered) {
+	let output = '\n';
+	// If there is a leading newline, strip it.  Seems to always be there.
+	if (body.indexOf('\n') === 0) {
+		body = body.replace('\n', '');
+	}
+	// First split up the body based on newlines to get the list items.
+	let listItems = body.split('\n');
+	for (var i = 0; i < listItems.length; i++) {
+		if (i !== 0) {
+			output += '\n';
+		}
+		// Add in the number (ordered) or the dash (unordered)
+		output += (ordered ? ((i + 1) + '. ') : '- ') + listItems[i];
+	}
+	return output;
+};
 
 // -------------------------------------------------------
 // Format a string to the requested width, filling extra
