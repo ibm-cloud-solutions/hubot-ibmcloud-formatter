@@ -43,7 +43,7 @@ describe('Interacting with the Plain Text Transformer', function() {
 		expect(robot.emit).to.have.not.been.called;
 	});
 
-	it('should attempt to uploadfile', function() {
+	it('should attempt to uploadfile without message', function() {
 		let fileName = new Date().getTime() + '.txt';
 		fs.closeSync(fs.openSync(fileName, 'w'));
 		const robot = {};
@@ -63,6 +63,31 @@ describe('Interacting with the Plain Text Transformer', function() {
 
 		formatter(robot, payload);
 		expect(payload.response.send).to.have.been.calledWith(`File downloaded and available ${pathToFile}`);
+		if (fs.exists(fileName))
+			fs.unlinkSync(fileName);
+	});
+
+	it('should attempt to uploadfile with message', function() {
+		let fileName = new Date().getTime() + '.txt';
+		fs.closeSync(fs.openSync(fileName, 'w'));
+		const robot = {};
+		robot.adapterName = 'shell';
+		robot.logger = logger;
+		robot.emit = sinon.spy();
+		const payload = {
+			fileName: fileName,
+			filePath: fileName,
+			message: 'message for file',
+			response: {
+				send() {}
+			}
+		};
+
+		let pathToFile = fs.realpathSync(fileName);
+		payload.response.send = sinon.spy();
+
+		formatter(robot, payload);
+		expect(payload.response.send).to.have.been.calledWith(`message for file\nFile downloaded and available ${pathToFile}`);
 		if (fs.exists(fileName))
 			fs.unlinkSync(fileName);
 	});
