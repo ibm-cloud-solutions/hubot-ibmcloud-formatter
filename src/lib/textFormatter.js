@@ -13,7 +13,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const marked = require('marked');
 
-const i18n = new(require('i18n-2'))({
+const i18n = new (require('i18n-2'))({
 	locales: ['en'],
 	extension: '.json',
 	// Add more languages to the list of locales when the files are created.
