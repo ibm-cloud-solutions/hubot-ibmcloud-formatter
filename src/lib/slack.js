@@ -70,7 +70,7 @@ renderer.list = function(body, ordered) {
 // -------------------------------------------------------
 module.exports = (robot, attachment) => {
 
-	if (attachment && attachment.message) {
+	if (attachment && attachment.message && !attachment.filePath) {
 		// Detect hrefs in the strings.  Not clean in marked out of the box.
 		// Replace <a href="link">link_text</a> with simply link.
 		let re = /<a href="(.+)">.*<\/a>/i;
@@ -89,11 +89,12 @@ module.exports = (robot, attachment) => {
 
 		robot.logger.debug(`${TAG}: Uploading file to slack - ${attachment.fileName}`);
 		let file = fs.createReadStream(attachment.filePath);
+		let message = attachment.message ? attachment.message : attachment.fileName;
 		request.post({
 			url: 'https://slack.com/api/files.upload',
 			formData: {
 				token: slackToken,
-				title: attachment.fileName,
+				title: message,
 				filename: attachment.fileName,
 				filetype: 'auto',
 				channels: slackChannel,

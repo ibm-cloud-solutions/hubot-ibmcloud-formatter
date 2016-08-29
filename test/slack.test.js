@@ -31,7 +31,7 @@ describe('Interacting with the Slack Transformer', function() {
 		logger: logger
 	};
 
-	it('should attempt to uploadfile', function() {
+	it('should attempt to uploadfile without message', function() {
 		nock('https://slack.com/api').post('/files.upload').reply(200, {});
 		let fileName = new Date().getTime() + '.txt';
 		fs.closeSync(fs.openSync(fileName, 'w'));
@@ -47,6 +47,38 @@ describe('Interacting with the Slack Transformer', function() {
 		const payload = {
 			fileName: fileName,
 			filePath: fileName,
+			response: {
+				message: {
+					room: '12345Channel'
+				}
+			}
+		};
+
+		payload.response.send = sinon.spy();
+
+		slack(robot, payload);
+		expect(robot.emit).to.have.not.been.called;
+		if (fs.exists(fileName))
+			fs.unlinkSync(fileName);
+	});
+
+	it('should attempt to uploadfile with message', function() {
+		nock('https://slack.com/api').post('/files.upload').reply(200, {});
+		let fileName = new Date().getTime() + '.txt';
+		fs.closeSync(fs.openSync(fileName, 'w'));
+		const robot = {};
+		robot.adapterName = 'slack';
+		robot.adapter = {
+			options: {
+				token: '1234'
+			}
+		};
+		robot.logger = logger;
+		robot.emit = sinon.spy();
+		const payload = {
+			fileName: fileName,
+			filePath: fileName,
+			message: 'message for file',
 			response: {
 				message: {
 					room: '12345Channel'

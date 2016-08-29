@@ -126,7 +126,7 @@ function asciiToTable(input) {
 
 module.exports = (robot, attachment) => {
 	let responseMessage = '';
-	if (attachment.message) {
+	if (attachment.message && !attachment.filePath) {
 		// Handle a basic message as a string, but strip formatting first.
 		responseMessage = marked(attachment.message, {
 			renderer: renderer,
@@ -137,7 +137,9 @@ module.exports = (robot, attachment) => {
 		let pathToFile = fs.realpathSync(attachment.filePath);
 
 		robot.logger.debug(`${TAG}: File downloaded and available ${pathToFile}`);
-		responseMessage = i18n.__('formatter.file.downloaded', pathToFile);
+		if (attachment.message)
+			responseMessage = attachment.message + '\n';
+		responseMessage += i18n.__('formatter.file.downloaded', pathToFile);
 	}
 	else if (attachment && attachment.attachments) {
 		// Handle attachments, formatting into an ascii table.
