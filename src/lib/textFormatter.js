@@ -13,7 +13,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const marked = require('marked');
 
-const i18n = new (require('i18n-2'))({
+const i18n = new(require('i18n-2'))({
 	locales: ['en'],
 	extension: '.json',
 	// Add more languages to the list of locales when the files are created.
@@ -126,7 +126,7 @@ function asciiToTable(input) {
 
 module.exports = (robot, attachment) => {
 	let responseMessage = '';
-	if (attachment.message) {
+	if (attachment.message && !attachment.filePath) {
 		// Handle a basic message as a string, but strip formatting first.
 		responseMessage = marked(attachment.message, {
 			renderer: renderer,
@@ -137,7 +137,9 @@ module.exports = (robot, attachment) => {
 		let pathToFile = fs.realpathSync(attachment.filePath);
 
 		robot.logger.debug(`${TAG}: File downloaded and available ${pathToFile}`);
-		responseMessage = i18n.__('formatter.file.downloaded', pathToFile);
+		if (attachment.message)
+			responseMessage = attachment.message + '\n';
+		responseMessage += i18n.__('formatter.file.downloaded', pathToFile);
 	}
 	else if (attachment && attachment.attachments) {
 		// Handle attachments, formatting into an ascii table.
