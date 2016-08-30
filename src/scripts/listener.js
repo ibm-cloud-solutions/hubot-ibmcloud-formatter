@@ -12,8 +12,8 @@
  */
 'use strict';
 
-var path = require('path');
-var TAG = path.basename(__filename);
+const path = require('path');
+const TAG = path.basename(__filename);
 
 const ADAPTERS = {
 	slack: require('../lib/slack'),

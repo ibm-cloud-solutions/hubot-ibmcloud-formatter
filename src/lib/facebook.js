@@ -19,8 +19,8 @@
 // Regular message:
 // 320 characters
 
-var path = require('path');
-var TAG = path.basename(__filename);
+const path = require('path');
+const TAG = path.basename(__filename);
 const fs = require('fs');
 
 const _ = require('lodash');
@@ -30,7 +30,7 @@ const FB_HORIZONTAL_LIMIT = 10;
 const ELLIPSIS = '...';
 
 // Custom renderer to strip out the formatting not supported by FB
-var renderer = new marked.Renderer();
+const renderer = new marked.Renderer();
 // Handle bold, marked by: **text**
 renderer.strong = function(text) {
 	return '\'' + text + '\'';
@@ -65,7 +65,7 @@ renderer.list = function(body, ordered) {
 	}
 	// First split up the body based on newlines to get the list items.
 	let listItems = body.split('\n');
-	for (var i = 0; i < listItems.length; i++) {
+	for (let i = 0; i < listItems.length; i++) {
 		if (i !== 0) {
 			output += '\n';
 		}

@@ -51,7 +51,7 @@ renderer.list = function(body, ordered) {
 	}
 	// First split up the body based on newlines to get the list items.
 	let listItems = body.split('\n');
-	for (var i = 0; i < listItems.length; i++) {
+	for (let i = 0; i < listItems.length; i++) {
 		if (i !== 0) {
 			output += '\n';
 		}
@@ -142,7 +142,7 @@ module.exports = (robot, attachment) => {
 
 			// Copy the number of attachments to send into a new array.
 			let smallAttachments = [];
-			for (var i = 0; i < numAttachmentsToSend; i++) {
+			for (let i = 0; i < numAttachmentsToSend; i++) {
 				smallAttachments.push(attachment.attachments[currentIndex++]);
 			}
 			attachment.response.send({
