@@ -6,8 +6,8 @@
  */
 'use strict';
 
-var path = require('path');
-var TAG = path.basename(__filename);
+const path = require('path');
+const TAG = path.basename(__filename);
 const fs = require('fs');
 
 const _ = require('lodash');
@@ -63,7 +63,7 @@ renderer.list = function(body, ordered) {
 	}
 	// First split up the body based on newlines to get the list items.
 	let listItems = body.split('\n');
-	for (var i = 0; i < listItems.length; i++) {
+	for (let i = 0; i < listItems.length; i++) {
 		if (i !== 0) {
 			output += '\n';
 		}
@@ -88,29 +88,29 @@ function formatString(string, width, padding) {
 // -------------------------------------------------------
 function asciiToTable(input) {
 	// First split the input up by newline characters.
-	var rows = input.split('\n');
+	const rows = input.split('\n');
 	// Pass 1: Iterate the rows to determine the max width of each column.
-	var columnWidths = [];
-	for (var i = 0; i < rows.length; i++) {
-		var row = rows[i];
-		var columns = row.split('\t');
-		for (var j = 0; j < columns.length; j++) {
-			var element = columns[j];
+	const columnWidths = [];
+	for (let i = 0; i < rows.length; i++) {
+		let row = rows[i];
+		const columns = row.split('\t');
+		for (let j = 0; j < columns.length; j++) {
+			const element = columns[j];
 			if (columnWidths.length <= j || columnWidths[j] < element.length) {
 				columnWidths[j] = element.length;
 			}
 		}
 	}
 	// Pass 2: Format the table based on the max column widths.
-	var output = '';
-	for (i = 0; i < rows.length; i++) {
+	let output = '';
+	for (let i = 0; i < rows.length; i++) {
 		if (i !== 0) {
 			output += '\n';
 		}
-		row = rows[i];
-		columns = row.split('\t');
-		for (j = 0; j < columns.length; j++) {
-			element = columns[j];
+		const row = rows[i];
+		const columns = row.split('\t');
+		for (let j = 0; j < columns.length; j++) {
+			const element = columns[j];
 			if (j === columns.length - 1) {
 				// Last column.  No special formatting
 				output += element;

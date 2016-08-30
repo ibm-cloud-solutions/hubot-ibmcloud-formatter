@@ -111,7 +111,7 @@ describe('Interacting with the Slack Transformer', function() {
 		let longAttachments = [];
 		let firstAttachments = [];
 		let secondAttachments = [];
-		for (var i = 0; i < 51; i++) {
+		for (let i = 0; i < 51; i++) {
 			longAttachments.push(i);
 			if (i < 50) {
 				firstAttachments.push(i);
