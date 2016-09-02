@@ -1,6 +1,6 @@
 {
   "name": "hubot-ibmcloud-formatter",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "Adapts attachment objects to platform-specific messages",
   "main": "index.js",
   "repository": {
