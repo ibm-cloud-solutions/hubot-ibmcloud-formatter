@@ -18,7 +18,9 @@
     "slack",
     "facebook",
     "ibm cloud",
-    "attachment formatter"
+    "attachment formatter",
+    "ibm",
+    "cloud"
   ],
   "author": "ibm-cloud-solutions",
   "license": "Apache-2.0",
