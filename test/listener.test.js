@@ -12,6 +12,19 @@ const sinonChai = require('sinon-chai');
 const expect = chai.expect;
 const listener = require('../src/scripts/listener');
 
+const i18n = new (require('i18n-2'))({
+	locales: ['en'],
+	extension: '.json',
+	// Add more languages to the list of locales when the files are created.
+	directory: __dirname + '/../src/messages',
+	defaultLocale: 'en',
+	// Prevent messages file from being overwritten in error conditions (like poor JSON).
+	updateFiles: false
+});
+// At some point we need to toggle this setting based on some user input.
+i18n.setLocale('en');
+
+
 chai.use(sinonChai);
 
 // Passing arrow functions to mocha is discouraged: https://mochajs.org/#arrow-functions
@@ -88,7 +101,7 @@ describe('Interacting with the IBM Cloud Formatter', function() {
 			expect(eventCb).to.be.defined;
 			eventCb(payload);
 			expect(robot.emit).to.have.not.been.calledWith('slack.attachment');
-			expect(payload.response.send).to.have.been.calledWith('No results found');
+			expect(payload.response.send).to.have.been.calledWith(i18n.__('formatter.no.results.found'));
 		});
 
 		it('should prepend robot\'s name to message when using fb adapter', function() {
