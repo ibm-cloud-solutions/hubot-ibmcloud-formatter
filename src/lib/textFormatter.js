@@ -140,6 +140,9 @@ module.exports = (robot, attachment) => {
 		if (attachment.message)
 			responseMessage = attachment.message + '\n';
 		responseMessage += i18n.__('formatter.file.downloaded', pathToFile);
+
+		if (attachment.initial_comment)
+			responseMessage += '\n' + attachment.initial_comment + '\n';
 	}
 	else if (attachment && attachment.attachments) {
 		// Handle attachments, formatting into an ascii table.

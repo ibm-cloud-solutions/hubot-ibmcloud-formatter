@@ -92,6 +92,32 @@ describe('Interacting with the Plain Text Transformer', function() {
 			fs.unlinkSync(fileName);
 	});
 
+	it('should attempt to uploadfile with message and initial_comment', function() {
+		let fileName = new Date().getTime() + '.txt';
+		fs.closeSync(fs.openSync(fileName, 'w'));
+		const robot = {};
+		robot.adapterName = 'shell';
+		robot.logger = logger;
+		robot.emit = sinon.spy();
+		const payload = {
+			fileName: fileName,
+			filePath: fileName,
+			message: 'message for file',
+			initial_comment: 'nice file',
+			response: {
+				send() {}
+			}
+		};
+
+		let pathToFile = fs.realpathSync(fileName);
+		payload.response.send = sinon.spy();
+
+		formatter(robot, payload);
+		expect(payload.response.send).to.have.been.calledWith(`message for file\nFile downloaded and available ${pathToFile}\nnice file\n`);
+		if (fs.exists(fileName))
+			fs.unlinkSync(fileName);
+	});
+
 	it('should format attachment titles and text', function() {
 		const robot = {};
 		robot.logger = logger;

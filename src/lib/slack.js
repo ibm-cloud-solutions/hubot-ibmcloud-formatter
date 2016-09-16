@@ -90,16 +90,21 @@ module.exports = (robot, attachment) => {
 		robot.logger.debug(`${TAG}: Uploading file to slack - ${attachment.fileName}`);
 		let file = fs.createReadStream(attachment.filePath);
 		let message = attachment.message ? attachment.message : attachment.fileName;
+		let formData = {
+			token: slackToken,
+			title: message,
+			filename: attachment.fileName,
+			filetype: 'auto',
+			channels: slackChannel,
+			file: file
+		};
+
+		if (attachment.initial_comment)
+			formData.initial_comment = attachment.initial_comment;
+
 		request.post({
 			url: 'https://slack.com/api/files.upload',
-			formData: {
-				token: slackToken,
-				title: message,
-				filename: attachment.fileName,
-				filetype: 'auto',
-				channels: slackChannel,
-				file: file
-			}
+			formData: formData
 
 		}, function(err, res) {
 			fs.unlinkSync(attachment.filePath);
